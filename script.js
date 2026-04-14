@@ -37,196 +37,215 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    let navbarTicking = false;
-    window.addEventListener('scroll', function () {
-      if (!navbarTicking) {
-        window.requestAnimationFrame(function () {
-          handleNavbarScroll();
-          navbarTicking = false;
-        });
-        navbarTicking = true;
-      }
-    }, { passive: true });
-
+    window.addEventListener('scroll', handleNavbarScroll, { passive: true });
     handleNavbarScroll();
   }
 
   // ─── 3. Contact Form Validation ──────────────────────────────────────────────
-  document.body.addEventListener('submit', function (e) {
-    const form = e.target.closest('.contact-form');
-    if (!form) return;
+  const contactForm = document.querySelector('.contact-form');
 
-    e.preventDefault();
-    clearFormErrors(form);
-
-    const fields = form.querySelectorAll('input, textarea, select');
-    let isValid = true;
-    let firstInvalidField = null;
-
-    fields.forEach(function (field) {
-      const value = field.value.trim();
-      const name = field.name || field.id || 'field';
-      let error = '';
-
-      if (field.hasAttribute('required') && value === '') {
-        error = field.dataset.errorRequired || 'This field is required.';
-      } else if (value !== '') {
-        if (field.type === 'email' && !isValidEmail(value)) {
-          error = field.dataset.errorEmail || 'Please enter a valid email address.';
-        }
-
-        if (field.type === 'tel' && !isValidPhone(value)) {
-          error = field.dataset.errorTel || 'Please enter a valid phone number.';
-        }
-
-        if (field.minLength && field.minLength > 0 && value.length < field.minLength) {
-          error = field.dataset.errorMinlength ||
-            'Minimum ' + field.minLength + ' characters required.';
-        }
-
-        if (field.maxLength && field.maxLength > 0 && value.length > field.maxLength) {
-          error = field.dataset.errorMaxlength ||
-            'Maximum ' + field.maxLength + ' characters allowed.';
-        }
+  if (contactForm) {
+    const VALIDATORS = {
+      required: function (value) {
+        return value.trim() !== '';
+      },
+      email: function (value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+      },
+      tel: function (value) {
+        return value.trim() === '' || /^[\d\s\+\-\(\)]{7,20}$/.test(value.trim());
+      },
+      minlength: function (value, param) {
+        return value.trim().length >= parseInt(param, 10);
       }
+    };
 
-      if (error) {
-        isValid = false;
-        showFieldError(field, error);
-        if (!firstInvalidField) {
-          firstInvalidField = field;
-        }
-      } else if (value !== '') {
-        showFieldSuccess(field);
-      }
-    });
+    function getErrorMessage(field, rule) {
+      const label = field.closest('.form-group, .field-wrapper, label')
+        ? (field.closest('.form-group, .field-wrapper')
+            ? (field.closest('.form-group, .field-wrapper').querySelector('label')
+                ? field.closest('.form-group, .field-wrapper').querySelector('label').textContent.trim()
+                : field.name || field.id || 'This field')
+            : field.name || field.id || 'This field')
+        : field.name || field.id || 'This field';
 
-    if (!isValid && firstInvalidField) {
-      firstInvalidField.focus();
-      firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
+      const messages = {
+        required: label + ' is required.',
+        email: 'Please enter a valid email address.',
+        tel: 'Please enter a valid phone number.',
+        minlength: label + ' is too short.'
+      };
+
+      return messages[rule] || label + ' is invalid.';
     }
 
-    if (isValid) {
-      handleFormSuccess(form);
+    function clearError(field) {
+      field.classList.remove('is-invalid');
+      field.removeAttribute('aria-invalid');
+
+      const existingError = field.parentElement
+        ? field.parentElement.querySelector('.form-error-message')
+        : null;
+
+      if (existingError) {
+        existingError.remove();
+      }
     }
-  });
 
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+    function showError(field, message) {
+      clearError(field);
+      field.classList.add('is-invalid');
+      field.setAttribute('aria-invalid', 'true');
 
-  function isValidPhone(phone) {
-    return /^[\+]?[\d\s\-\(\)]{7,20}$/.test(phone);
-  }
-
-  function showFieldError(field, message) {
-    field.classList.add('field-error');
-    field.classList.remove('field-success');
-    field.setAttribute('aria-invalid', 'true');
-
-    let errorEl = document.getElementById('error-' + (field.name || field.id));
-    if (!errorEl) {
-      errorEl = document.createElement('span');
+      const errorEl = document.createElement('span');
       errorEl.className = 'form-error-message';
-      errorEl.id = 'error-' + (field.name || field.id);
       errorEl.setAttribute('role', 'alert');
-      field.parentNode.insertBefore(errorEl, field.nextSibling);
+      errorEl.setAttribute('aria-live', 'polite');
+      errorEl.textContent = message;
+
+      if (field.parentElement) {
+        field.parentElement.appendChild(errorEl);
+      }
     }
-    errorEl.textContent = message;
-    field.setAttribute('aria-describedby', errorEl.id);
-  }
 
-  function showFieldSuccess(field) {
-    field.classList.remove('field-error');
-    field.classList.add('field-success');
-    field.setAttribute('aria-invalid', 'false');
-  }
+    function validateField(field) {
+      if (field.disabled || field.type === 'hidden' || field.type === 'submit' || field.type === 'button') {
+        return true;
+      }
 
-  function clearFormErrors(form) {
-    form.querySelectorAll('.field-error, .field-success').forEach(function (el) {
-      el.classList.remove('field-error', 'field-success');
-      el.removeAttribute('aria-invalid');
-      el.removeAttribute('aria-describedby');
+      const isRequired = field.hasAttribute('required');
+      const fieldType = field.type || field.tagName.toLowerCase();
+      const value = field.value;
+
+      if (isRequired && !VALIDATORS.required(value)) {
+        showError(field, getErrorMessage(field, 'required'));
+        return false;
+      }
+
+      if (value.trim() !== '') {
+        if ((fieldType === 'email') && !VALIDATORS.email(value)) {
+          showError(field, getErrorMessage(field, 'email'));
+          return false;
+        }
+
+        if ((fieldType === 'tel') && !VALIDATORS.tel(value)) {
+          showError(field, getErrorMessage(field, 'tel'));
+          return false;
+        }
+
+        const minLength = field.getAttribute('minlength');
+        if (minLength && !VALIDATORS.minlength(value, minLength)) {
+          showError(field, getErrorMessage(field, 'minlength'));
+          return false;
+        }
+      }
+
+      clearError(field);
+      field.classList.add('is-valid');
+      return true;
+    }
+
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const fields = contactForm.querySelectorAll('input, textarea, select');
+      let isFormValid = true;
+      let firstInvalidField = null;
+
+      fields.forEach(function (field) {
+        const valid = validateField(field);
+        if (!valid) {
+          isFormValid = false;
+          if (!firstInvalidField) {
+            firstInvalidField = field;
+          }
+        }
+      });
+
+      if (!isFormValid) {
+        if (firstInvalidField) {
+          firstInvalidField.focus();
+          firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+
+      const submitBtn = contactForm.querySelector('[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = submitBtn.getAttribute('data-loading-text') || 'Sending...';
+
+        setTimeout(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }, 3000);
+      }
+
+      contactForm.dispatchEvent(new CustomEvent('formValidated', {
+        bubbles: true,
+        detail: { form: contactForm }
+      }));
     });
-    form.querySelectorAll('.form-error-message').forEach(function (el) {
-      el.remove();
-    });
-    const successMsg = form.querySelector('.form-success-message');
-    if (successMsg) successMsg.remove();
-  }
 
-  function handleFormSuccess(form) {
-    const successMessage = form.dataset.successMessage || 'Thank you! Your message has been sent.';
+    contactForm.addEventListener('blur', function (e) {
+      const field = e.target;
+      if (field.matches('input, textarea, select')) {
+        field.classList.remove('is-valid');
+        validateField(field);
+      }
+    }, true);
 
-    let successEl = form.querySelector('.form-success-message');
-    if (!successEl) {
-      successEl = document.createElement('div');
-      successEl.className = 'form-success-message';
-      successEl.setAttribute('role', 'status');
-      successEl.setAttribute('aria-live', 'polite');
-      form.appendChild(successEl);
-    }
-    successEl.textContent = successMessage;
-
-    const submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) {
-      const originalText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = submitBtn.dataset.loadingText || 'Sending...';
-
-      setTimeout(function () {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-      }, 3000);
-    }
-
-    form.reset();
-
-    form.querySelectorAll('.field-success').forEach(function (el) {
-      el.classList.remove('field-success');
+    contactForm.addEventListener('input', function (e) {
+      const field = e.target;
+      if (field.matches('input, textarea, select') && field.classList.contains('is-invalid')) {
+        validateField(field);
+      }
     });
   }
 
   // ─── 4. Scroll Animations (Fade-in on Scroll) ────────────────────────────────
   const ANIMATION_CLASS = 'fade-in-visible';
-  const OBSERVE_SELECTORS = [
-    '.fade-in',
-    '.animate-on-scroll',
-    '[data-animate]'
-  ];
+  const OBSERVED_SELECTOR = '.fade-in, [data-animate], .animate-on-scroll';
 
-  const animatableElements = document.querySelectorAll(OBSERVE_SELECTORS.join(', '));
+  const animationElements = document.querySelectorAll(OBSERVED_SELECTOR);
 
-  if (animatableElements.length > 0) {
+  if (animationElements.length > 0) {
     if ('IntersectionObserver' in window) {
       const observerOptions = {
         root: null,
         rootMargin: '0px 0px -60px 0px',
-        threshold: 0.1
+        threshold: 0.15
       };
 
-      const scrollObserver = new IntersectionObserver(function (entries) {
+      const intersectionCallback = function (entries, observer) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             const el = entry.target;
-            const delay = el.dataset.animateDelay || '0';
+            const delay = el.getAttribute('data-delay');
 
-            setTimeout(function () {
+            if (delay) {
+              setTimeout(function () {
+                el.classList.add(ANIMATION_CLASS);
+              }, parseInt(delay, 10));
+            } else {
               el.classList.add(ANIMATION_CLASS);
-            }, parseInt(delay, 10));
+            }
 
-            scrollObserver.unobserve(el);
+            observer.unobserve(el);
           }
         });
-      }, observerOptions);
+      };
 
-      animatableElements.forEach(function (el) {
+      const scrollObserver = new IntersectionObserver(intersectionCallback, observerOptions);
+
+      animationElements.forEach(function (el) {
+        el.classList.add('fade-in-ready');
         scrollObserver.observe(el);
       });
 
     } else {
-      animatableElements.forEach(function (el) {
+      animationElements.forEach(function (el) {
         el.classList.add(ANIMATION_CLASS);
       });
     }
@@ -7442,778 +7461,213 @@ window.onload = function() {
 };
 
 
-    // Enhanced contact form handling with Elastic Email integration
-    // API URL: https://api.zappy5.com
-    (function() {
-        // Check if contact form handler is already loaded
-        if (window.zappyContactFormLoaded) {
-            console.log('📧 Zappy contact form already loaded');
+// Zappy Contact Form API Integration (Fallback)
+(function() {
+    if (window.zappyContactFormLoaded) {
+        console.log('📧 Zappy contact form already loaded');
+        return;
+    }
+    window.zappyContactFormLoaded = true;
+
+    function zappyNotify(message, type) {
+        var existing = document.querySelectorAll('.zappy-notification');
+        existing.forEach(function(el) { el.remove(); });
+        var el = document.createElement('div');
+        el.className = 'zappy-notification';
+        var bg = type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1';
+        var fg = type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460';
+        var border = type === 'success' ? '#c3e6cb' : type === 'error' ? '#f5c6cb' : '#bee5eb';
+        var icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+        el.style.cssText = 'position:fixed;top:20px;right:20px;max-width:400px;padding:16px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10000;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.4;animation:slideInRight .3s ease-out;background:' + bg + ';color:' + fg + ';border:1px solid ' + border;
+        el.innerHTML = '<span style="margin-right:8px">' + icon + '</span>' + message + '<button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;float:right;opacity:.7;padding:0 0 0 12px">&times;</button>';
+        if (!document.getElementById('zappy-notify-anim')) {
+            var s = document.createElement('style');
+            s.id = 'zappy-notify-anim';
+            s.textContent = '@keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}';
+            document.head.appendChild(s);
+        }
+        document.body.appendChild(el);
+        setTimeout(function() { if (el.parentElement) el.remove(); }, type === 'error' ? 8000 : 5000);
+    }
+
+    function initContactFormIntegration() {
+        console.log('📧 Zappy: Initializing contact form API integration...');
+
+        var contactForm = document.querySelector('.contact-form') || 
+                           document.querySelector('form[action*="contact"]') ||
+                           document.querySelector('form#contact') ||
+                           document.querySelector('form#contactForm') ||
+                           document.getElementById('contactForm') ||
+                           document.querySelector('section.contact form') ||
+                           document.querySelector('section#contact form') ||
+                           document.querySelector('form');
+        
+        if (!contactForm) {
+            console.log('⚠️ Zappy: No contact form found on page');
             return;
         }
-        window.zappyContactFormLoaded = true;
         
-        // Wait for DOM to be ready before initializing
-        function initContactForm() {
-            console.log('📧 Zappy: Initializing contact form handler...');
-            
-            // Find contact form with multiple selector fallbacks
-            const contactForm = document.querySelector('.contact-form') || 
-                               document.querySelector('form[action*="contact"]') ||
-                               document.querySelector('form#contact') ||
-                               document.querySelector('form#contactForm') ||
-                               document.getElementById('contactForm') ||
-                               document.querySelector('section.contact form') ||
-                               document.querySelector('section#contact form') ||
-                               document.querySelector('form');
-            
-            if (!contactForm) {
-                console.log('⚠️ Zappy: No contact form found on page');
-                return;
+        console.log('✅ Zappy: Contact form found:', contactForm.className || contactForm.id || 'unnamed form');
+
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Validate privacy consent checkbox if present (required for GDPR)
+        var privacyCheckbox = this.querySelector('.privacy-consent-checkbox');
+        if (privacyCheckbox && !privacyCheckbox.checked) {
+            zappyNotify('Please accept the Terms & Conditions and Privacy Policy to continue', 'error');
+            privacyCheckbox.focus();
+            return;
+        }
+
+        // Collect form data with multi-value support (checkboxes, multi-selects)
+        var formData = new FormData(this);
+        var data = {};
+        for (var pair of formData.entries()) {
+            if (data[pair[0]] !== undefined) {
+                if (Array.isArray(data[pair[0]])) data[pair[0]].push(pair[1]);
+                else data[pair[0]] = [data[pair[0]], pair[1]];
+            } else {
+                data[pair[0]] = pair[1];
             }
-            
-            console.log('✅ Zappy: Contact form found:', contactForm.className || contactForm.id || 'unnamed form');
-            
-            // Remove any existing submit handlers by cloning the form element
-            const newContactForm = contactForm.cloneNode(true);
-            contactForm.parentNode.replaceChild(newContactForm, contactForm);
-            
-            // Now add our handler to the clean form
-            newContactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Validate privacy consent checkbox if present (required for GDPR)
-            var privacyCheckbox = this.querySelector('.privacy-consent-checkbox');
-            if (privacyCheckbox && !privacyCheckbox.checked) {
-                showNotification('Please accept the Terms & Conditions and Privacy Policy to continue', 'error');
-                privacyCheckbox.focus();
-                return;
+        }
+
+        // Smart field mapping
+        var _coreNameFields = ['name','firstName','first_name','fname','lastName','last_name','lname'];
+        var _coreEmailFields = ['email','emailAddress','mail','e-mail'];
+        var _corePhoneFields = ['phone','tel','telephone','mobile','cellphone'];
+        var _coreMsgFields = ['message','msg','comments','comment','description','details','notes','body','text','inquiry'];
+        var _coreSubjectFields = ['subject','topic','regarding','re'];
+        var _allCoreFields = [].concat(_coreNameFields, _coreEmailFields, _corePhoneFields, _coreMsgFields, _coreSubjectFields);
+
+        var resolvedName = (data.name || '').trim()
+            || [data.firstName || data.first_name || data.fname || '', data.lastName || data.last_name || data.lname || ''].filter(Boolean).join(' ').trim()
+            || (data.email || data.emailAddress || data.mail || '').trim()
+            || 'Anonymous';
+        var resolvedEmail = (data.email || data.emailAddress || data.mail || data['e-mail'] || '').trim();
+        var resolvedPhone = data.phone || data.tel || data.telephone || data.mobile || data.cellphone || null;
+        var resolvedSubject = data.subject || data.topic || data.regarding || data.re || 'Contact Form Submission';
+        var resolvedMessage = (data.message || data.msg || data.comments || data.comment || data.description || data.details || data.body || data.text || data.inquiry || '').trim();
+        if (!resolvedMessage) {
+            var extraEntries = Object.entries(data).filter(function(e) { return _allCoreFields.indexOf(e[0]) === -1; });
+            if (extraEntries.length > 0) {
+                resolvedMessage = extraEntries.map(function(e) {
+                    var label = e[0].replace(/([A-Z])/g, ' $1').replace(/[_-]/g, ' ').trim();
+                    var val = Array.isArray(e[1]) ? e[1].join(', ') : e[1];
+                    return label + ': ' + val;
+                }).join('\n');
+            } else {
+                resolvedMessage = 'Form submission from ' + window.location.pathname;
             }
-            
-            // Get form data with multi-value support (checkboxes, multi-selects)
-            const formData = new FormData(this);
-            const data = {};
-            for (const [key, value] of formData.entries()) {
-                if (data[key] !== undefined) {
-                    if (Array.isArray(data[key])) data[key].push(value);
-                    else data[key] = [data[key], value];
-                } else {
-                    data[key] = value;
-                }
+        }
+
+        var extraFields = {};
+        for (var k of Object.keys(data)) {
+            if (_allCoreFields.indexOf(k) === -1 && data[k] !== '' && data[k] !== null && data[k] !== undefined) {
+                extraFields[k] = data[k];
             }
-            
-            // Smart name resolution: name > firstName+lastName > email
-            const _coreNameFields = ['name','firstName','first_name','fname','lastName','last_name','lname'];
-            const _coreEmailFields = ['email','emailAddress','mail','e-mail'];
-            const _corePhoneFields = ['phone','tel','telephone','mobile','cellphone'];
-            const _coreMsgFields = ['message','msg','comments','comment','description','details','notes','body','text','inquiry'];
-            const _coreSubjectFields = ['subject','topic','regarding','re'];
-            const _allCoreFields = [].concat(_coreNameFields, _coreEmailFields, _corePhoneFields, _coreMsgFields, _coreSubjectFields);
-            
-            const name = (data.name || '').trim()
-                || [data.firstName || data.first_name || data.fname || '', data.lastName || data.last_name || data.lname || ''].filter(Boolean).join(' ').trim()
-                || (data.email || data.emailAddress || data.mail || '').trim()
-                || 'Anonymous';
-            
-            const email = (data.email || data.emailAddress || data.mail || data['e-mail'] || '').trim();
-            
-            const phone = data.phone || data.tel || data.telephone || data.mobile || data.cellphone || null;
-            
-            const subject = data.subject || data.topic || data.regarding || data.re || 'Contact Form Submission';
-            
-            // Smart message resolution: use message field, or build summary from all non-core fields
-            let message = (data.message || data.msg || data.comments || data.comment || data.description || data.details || data.notes || data.body || data.text || data.inquiry || '').trim();
-            if (!message) {
-                const extraEntries = Object.entries(data).filter(function(e) { return !_allCoreFields.includes(e[0]); });
-                if (extraEntries.length > 0) {
-                    message = extraEntries.map(function(e) {
-                        const label = e[0].replace(/([A-Z])/g, ' $1').replace(/[_-]/g, ' ').trim();
-                        const val = Array.isArray(e[1]) ? e[1].join(', ') : e[1];
-                        return label + ': ' + val;
-                    }).join('\n');
-                } else {
-                    message = 'Form submission from ' + window.location.pathname;
-                }
-            }
-            
-            // Collect extra fields (anything not in the core set)
-            const extraFields = {};
-            for (const [key, value] of Object.entries(data)) {
-                if (!_allCoreFields.includes(key) && value !== '' && value !== null && value !== undefined) {
-                    extraFields[key] = value;
-                }
-            }
-            
-            if (!email) {
-                console.error('❌ Validation failed: no email found in form data');
-                showNotification('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            // Email validation
-            if (!isValidEmail(email)) {
-                showNotification('Please enter a valid email address', 'error');
-                return;
-            }
-            
-            // Get submit button and show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Sending...';
+        }
+
+        // Loading state
+        var submitBtn = this.querySelector('button[type="submit"], input[type="submit"]');
+        var originalText = submitBtn ? (submitBtn.value || submitBtn.textContent) : '';
+        if (submitBtn) {
+            if (submitBtn.tagName === 'INPUT') submitBtn.value = 'Sending...';
+            else submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
-            
-            // Add loading animation
-            submitBtn.classList.add('loading');
-            
-            try {
-                // Send to Zappy email API - prefer ZAPPY_API_BASE (set per-deployment) over build-time URL
-                const apiUrl = (window.ZAPPY_API_BASE || 'https://api.zappy5.com').replace(/\/$/, '');
-                const endpoint = apiUrl + '/api/email/contact-form';
-                
-                // Get current page path for thank you page lookup
-                // In preview mode, use ZAPPY_CONFIG.currentPagePath; otherwise use pathname
-                let currentPagePath = window.location.pathname;
-                if (window.ZAPPY_CONFIG && window.ZAPPY_CONFIG.currentPagePath) {
-                    currentPagePath = window.ZAPPY_CONFIG.currentPagePath;
-                } else {
-                    // Try to extract page from URL query param (fullscreen preview mode)
-                    try {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const pageParam = urlParams.get('page');
-                        if (pageParam) currentPagePath = pageParam;
-                    } catch (e) {}
-                }
-                
-                const payload = {
-                    websiteId: '23866273-c4f2-4387-bc80-50781a259e8d',
-                    name: name,
-                    email: email,
-                    subject: subject,
-                    message: message,
-                    phone: phone,
-                    currentPagePath: currentPagePath
-                };
-                if (Object.keys(extraFields).length > 0) {
-                    payload.extraFields = extraFields;
-                }
-                
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Check if there's a thank you page to redirect to
-                    if (result.thankYouPagePath && result.ticketNumber) {
-                        console.log('🎁 Redirecting to thank you page:', result.thankYouPagePath);
-                        
-                        // Build the redirect URL based on the current environment
-                        let thankYouUrl;
-                        const ticketParam = 'ticket=' + encodeURIComponent(result.ticketNumber);
-                        
-                        // Check if we're in preview mode (URL contains /preview/ or /preview-fullscreen/)
-                        const isPreviewMode = window.location.pathname.includes('/preview');
-                        
-                        if (isPreviewMode && window.ZAPPY_CONFIG) {
-                            // In preview mode, use the preview URL format
-                            const websiteId = window.ZAPPY_CONFIG.websiteId || '23866273-c4f2-4387-bc80-50781a259e8d';
-                            const authToken = window.ZAPPY_CONFIG.authToken;
-                            const baseUrl = window.location.origin;
-                            const previewType = window.location.pathname.includes('fullscreen') ? 'preview-fullscreen' : 'preview';
-                            
-                            thankYouUrl = baseUrl + '/api/website/' + previewType + '/' + websiteId + '?page=' + encodeURIComponent(result.thankYouPagePath) + '&' + ticketParam;
-                            if (authToken) {
-                                thankYouUrl += '&auth_token=' + encodeURIComponent(authToken);
-                            }
-                        } else {
-                            // In deployed/production mode, navigate directly to the page
-                            thankYouUrl = result.thankYouPagePath + '?' + ticketParam;
-                        }
-                        
-                        console.log('📍 Navigating to:', thankYouUrl);
-                        window.location.href = thankYouUrl;
-                        return; // Don't show notification since we're redirecting
-                    }
-                    
-                    // No thank you page - show standard notification
-                    var _siteLang = document.documentElement.lang || '';
-                    var _isHeSite = _siteLang === 'he' || (_siteLang !== 'ar' && document.documentElement.dir === 'rtl');
-                    var _isArSite = _siteLang === 'ar';
-                    var _successFallback = _isHeSite ? 'ההודעה שלך נשלחה בהצלחה! נחזור אליך בהקדם.' : _isArSite ? 'تم إرسال رسالتك بنجاح! سنرد عليك قريبًا.' : 'Thank you for your message! We\'ll get back to you soon.';
-                    showNotification(result.message || _successFallback, 'success');
-                    
-                    // Reset form
-                    this.reset();
-                    
-                    // Optional: Show additional success UI
-                    showSuccessModal();
-                } else {
-                    // Error from server
-                    console.error('❌ Server returned error:', result);
-                    var _isHeSiteErr = _siteLang === 'he' || (_siteLang !== 'ar' && document.documentElement.dir === 'rtl');
-                    var _isArSiteErr = _siteLang === 'ar';
-                    var _errFallback = _isHeSiteErr ? 'שליחת ההודעה נכשלה. אנא נסו שוב.' : _isArSiteErr ? 'فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.' : 'Failed to send message. Please try again.';
-                    showNotification(result.error || _errFallback, 'error');
-                }
-                
-            } catch (error) {
-                console.error('❌ Network error:', error);
-                console.error('Failed to connect to:', 'https://api.zappy5.com/api/email/contact-form');
-                
-                // Fallback: Show error message and provide alternative contact info
-                var _isHeSiteNet = _siteLang === 'he' || (_siteLang !== 'ar' && document.documentElement.dir === 'rtl');
-                var _isArSiteNet = _siteLang === 'ar';
-                var _netFallback = _isHeSiteNet ? 'לא ניתן לשלוח הודעה כרגע. אנא נסו שוב מאוחר יותר או צרו קשר ישירות.' : _isArSiteNet ? 'لا يمكن إرسال الرسالة الآن. يرجى المحاولة مرة أخرى لاحقًا.' : 'Unable to send message right now. Please try again later or contact us directly.';
-                showNotification(_netFallback, 'error');
-                
-                // Show fallback contact info
-                showFallbackContact();
-            } finally {
-                // Reset button state
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('loading');
-            }
-        });
-        
-        // Email validation helper
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
         }
-        
-        // Notification system
-        function showNotification(message, type = 'info') {
-            // Remove existing notifications
-            const existingNotifications = document.querySelectorAll('.zappy-notification');
-            existingNotifications.forEach(notification => notification.remove());
-            
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `zappy-notification zappy-notification--${type}`;
-            notification.innerHTML = `
-            <div class="zappy-notification__content">
-                <span class="zappy-notification__icon">
-                    ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
-                </span>
-                <span class="zappy-notification__message">${message}</span>
-                <button class="zappy-notification__close" onclick="this.parentElement.parentElement.remove()">×</button>
-            </div>
-            `;
-            
-            // Add styles if not already present
-            if (!document.querySelector('#zappy-notification-styles')) {
-                const styles = document.createElement('style');
-            styles.id = 'zappy-notification-styles';
-            styles.textContent = `
-                .zappy-notification {
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    max-width: 400px;
-                    padding: 16px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    z-index: 10000;
-                    animation: slideInRight 0.3s ease-out;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                }
-                
-                .zappy-notification--success {
-                    background-color: #d4edda;
-                    border: 1px solid #c3e6cb;
-                    color: #155724;
-                }
-                
-                .zappy-notification--error {
-                    background-color: #f8d7da;
-                    border: 1px solid #f5c6cb;
-                    color: #721c24;
-                }
-                
-                .zappy-notification--info {
-                    background-color: #d1ecf1;
-                    border: 1px solid #bee5eb;
-                    color: #0c5460;
-                }
-                
-                .zappy-notification__content {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-                
-                .zappy-notification__icon {
-                    font-size: 18px;
-                    flex-shrink: 0;
-                }
-                
-                .zappy-notification__message {
-                    flex: 1;
-                    font-size: 14px;
-                    line-height: 1.4;
-                }
-                
-                .zappy-notification__close {
-                    background: none;
-                    border: none;
-                    font-size: 20px;
-                    cursor: pointer;
-                    padding: 0;
-                    width: 24px;
-                    height: 24px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0.7;
-                }
-                
-                .zappy-notification__close:hover {
-                    opacity: 1;
-                }
-                
-                @keyframes slideInRight {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-                
-                .loading {
-                    position: relative;
-                    pointer-events: none;
-                }
-                
-                .loading::after {
-                    content: '';
-                    position: absolute;
-                    width: 16px;
-                    height: 16px;
-                    margin: auto;
-                    border: 2px solid transparent;
-                    border-top-color: currentColor;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                    top: 0;
-                    left: 0;
-                    bottom: 0;
-                    right: 0;
-                }
-                
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `;
-            document.head.appendChild(styles);
-        }
-        
-        // Add to page
-        document.body.appendChild(notification);
-        
-        // Auto-remove after 5 seconds for success, 8 seconds for errors
-        const timeout = type === 'error' ? 8000 : 5000;
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.style.animation = 'slideInRight 0.3s ease-out reverse';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, timeout);
-    }
-    
-    // Success modal for enhanced UX
-    function showSuccessModal() {
-        var _modalLang = document.documentElement.lang || '';
-        var _isHeSiteModal = _modalLang === 'he' || (_modalLang !== 'ar' && document.documentElement.dir === 'rtl');
-        const modal = document.createElement('div');
-        modal.className = 'zappy-success-modal';
-        modal.innerHTML = `
-            <div class="zappy-success-modal__backdrop" onclick="this.parentElement.remove()">
-                <div class="zappy-success-modal__content" onclick="event.stopPropagation()">
-                    <div class="zappy-success-modal__icon">🎉</div>
-                    <h3>${ _isHeSiteModal ? 'ההודעה נשלחה בהצלחה!' : 'Message Sent Successfully!' }</h3>
-                    <p>${ _isHeSiteModal ? 'תודה שפניתם אלינו. קיבלנו את הודעתכם ונחזור אליכם בהקדם האפשרי.' : "Thank you for reaching out. We've received your message and will get back to you as soon as possible." }</p>
-                    <button onclick="this.closest('.zappy-success-modal').remove()" class="zappy-success-modal__button">
-                        ${ _isHeSiteModal ? 'הבנתי!' : 'Got it!' }
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // Add modal styles
-        if (!document.querySelector('#zappy-modal-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'zappy-modal-styles';
-            styles.textContent = `
-                .zappy-success-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 10001;
-                    animation: fadeIn 0.3s ease-out;
-                }
-                
-                .zappy-success-modal__backdrop {
-                    width: 100%;
-                    height: 100%;
-                    background-color: rgba(0,0,0,0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 20px;
-                }
-                
-                .zappy-success-modal__content {
-                    background: white;
-                    padding: 40px;
-                    border-radius: 12px;
-                    text-align: center;
-                    max-width: 400px;
-                    width: 100%;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                    animation: slideUp 0.3s ease-out;
-                }
-                
-                .zappy-success-modal__icon {
-                    font-size: 48px;
-                    margin-bottom: 20px;
-                }
-                
-                .zappy-success-modal__content h3 {
-                    margin: 0 0 15px 0;
-                    color: #333;
-                    font-size: 24px;
-                }
-                
-                .zappy-success-modal__content p {
-                    margin: 0 0 25px 0;
-                    color: #666;
-                    line-height: 1.5;
-                }
-                
-                .zappy-success-modal__button {
-                    background: #007bff;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 6px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
-                
-                .zappy-success-modal__button:hover {
-                    background: #0056b3;
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                
-                @keyframes slideUp {
-                    from { transform: translateY(30px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(styles);
-        }
-        
-        document.body.appendChild(modal);
-        
-        // Auto-close after 5 seconds
-        setTimeout(() => {
-            if (modal.parentElement) {
-                modal.remove();
-            }
-        }, 5000);
-    }
-    
-    // Fallback contact information
-    function showFallbackContact() {
-        const fallback = document.createElement('div');
-        fallback.className = 'zappy-fallback-contact';
-        fallback.innerHTML = `
-            <div class="zappy-fallback-contact__content">
-                <h4>Alternative Contact Methods</h4>
-                <p>If you're having trouble sending your message, you can also reach us at:</p>
-                <div class="zappy-fallback-contact__methods">
-                    <a href="mailto:support@zappy5.com?subject=Contact Form Issue" class="zappy-fallback-contact__method">
-                        📧 support@zappy5.com
-                    </a>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="zappy-fallback-contact__close">
-                    Close
-                </button>
-            </div>
-        `;
-        
-        // Add fallback styles
-        if (!document.querySelector('#zappy-fallback-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'zappy-fallback-styles';
-            styles.textContent = `
-                .zappy-fallback-contact {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    max-width: 350px;
-                    background: white;
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    z-index: 10000;
-                    animation: slideInUp 0.3s ease-out;
-                }
-                
-                .zappy-fallback-contact__content {
-                    padding: 20px;
-                }
-                
-                .zappy-fallback-contact__content h4 {
-                    margin: 0 0 10px 0;
-                    color: #333;
-                    font-size: 16px;
-                }
-                
-                .zappy-fallback-contact__content p {
-                    margin: 0 0 15px 0;
-                    color: #666;
-                    font-size: 14px;
-                    line-height: 1.4;
-                }
-                
-                .zappy-fallback-contact__methods {
-                    margin-bottom: 15px;
-                }
-                
-                .zappy-fallback-contact__method {
-                    display: block;
-                    padding: 8px 12px;
-                    background: #f8f9fa;
-                    border: 1px solid #e9ecef;
-                    border-radius: 4px;
-                    text-decoration: none;
-                    color: #495057;
-                    font-size: 14px;
-                    transition: background-color 0.2s;
-                }
-                
-                .zappy-fallback-contact__method:hover {
-                    background: #e9ecef;
-                }
-                
-                .zappy-fallback-contact__close {
-                    background: #6c757d;
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    cursor: pointer;
-                    float: right;
-                }
-                
-                @keyframes slideInUp {
-                    from {
-                        transform: translateY(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateY(0);
-                        opacity: 1;
-                    }
-                }
-            `;
-            document.head.appendChild(styles);
-        }
-        
-        document.body.appendChild(fallback);
-        
-        // Auto-remove after 10 seconds
-        setTimeout(() => {
-            if (fallback.parentElement) {
-                fallback.remove();
-            }
-        }, 10000);
-        }
-        
-        // ═══════════════════════════════════════════════════════════════
-        // 🍔 MOBILE MENU TOGGLE HANDLER
-        // ═══════════════════════════════════════════════════════════════
-        (function initMobileMenu() {
-            const mobileToggle = document.getElementById('mobileToggle') || 
-                               document.querySelector('.mobile-toggle') || 
-                               document.querySelector('.hamburger');
-            const navMenu = document.getElementById('navMenu') || 
-                          document.querySelector('.nav-menu') ||
-                          document.querySelector('.navbar-menu');
-            
-            if (mobileToggle && navMenu) {
-                
-                // Toggle menu on button click
-                mobileToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const hamburgerIcon = this.querySelector('.hamburger-icon');
-                    const closeIcon = this.querySelector('.close-icon');
-                    const isActive = this.classList.contains('active');
-                    
-                    if (isActive) {
-                        // Show hamburger, hide X
-                        if (hamburgerIcon) hamburgerIcon.style.display = 'block';
-                        if (closeIcon) closeIcon.style.display = 'none';
-                        this.classList.remove('active');
-                        navMenu.classList.remove('active');
-                        document.body.style.overflow = '';
-                    } else {
-                        // Show X, hide hamburger  
-                        if (hamburgerIcon) hamburgerIcon.style.display = 'none';
-                        if (closeIcon) closeIcon.style.display = 'block';
-                        this.classList.add('active');
-                        navMenu.classList.add('active');
-                        document.body.style.overflow = 'hidden'; // Prevent scroll when menu open
-                    }
-                });
-                
-                // Close menu when clicking a nav link
-                const navLinks = navMenu.querySelectorAll('a');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', function() {
-                        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
-                        const closeIcon = mobileToggle.querySelector('.close-icon');
-                        if (hamburgerIcon) hamburgerIcon.style.display = 'block';
-                        if (closeIcon) closeIcon.style.display = 'none';
-                        mobileToggle.classList.remove('active');
-                        navMenu.classList.remove('active');
-                        document.body.style.overflow = '';
-                    });
-                });
-                
-                // Close menu when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (navMenu.classList.contains('active') && 
-                        !navMenu.contains(e.target) && 
-                        !mobileToggle.contains(e.target)) {
-                        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
-                        const closeIcon = mobileToggle.querySelector('.close-icon');
-                        if (hamburgerIcon) hamburgerIcon.style.display = 'block';
-                        if (closeIcon) closeIcon.style.display = 'none';
-                        mobileToggle.classList.remove('active');
-                        navMenu.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-                
-                // Handle escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
-                        const closeIcon = mobileToggle.querySelector('.close-icon');
-                        if (hamburgerIcon) hamburgerIcon.style.display = 'block';
-                        if (closeIcon) closeIcon.style.display = 'none';
-                        mobileToggle.classList.remove('active');
-                        navMenu.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-                
-                // Phone header button functionality
-                const phoneHeaderBtn = document.querySelector('.phone-header-btn');
-                if (phoneHeaderBtn) {
-                    phoneHeaderBtn.addEventListener('click', function() {
-                        // Dynamically get phone number from existing tel: links on the page
-                        // This ensures the phone button uses the same number as other phone links
-                        // Falls back to [business_phone] placeholder which businessInfoUpdater can replace
-                        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
-                        const phoneNumber = phoneLinks.length > 0 
-                            ? phoneLinks[0].getAttribute('href').replace('tel:', '')
-                            : '[business_phone]';
-                        window.location.href = 'tel:' + phoneNumber;
-                    });
-                }
-            }
-        })();
-        
-        // ═══════════════════════════════════════════════════════════════
-        // 🔗 DISABLE SOCIAL MEDIA LINKS WITH PLACEHOLDERS
-        // ═══════════════════════════════════════════════════════════════
-        (function disablePlaceholderLinks() {
-            // List of social media placeholders to check for (both old and new formats)
-            const socialPlaceholders = [
-                // New format (handle placeholders within URLs)
-                '[facebook_handle]',
-                '[instagram_handle]',
-                '[whatsapp_handle]',
-                '[twitter_handle]',
-                '[linkedin_handle]',
-                '[youtube_handle]',
-                '[tiktok_handle]',
-                '[pinterest_handle]',
-                // Old format (full URL placeholders)
-                '[social_facebook]',
-                '[social instagram]',
-                '[social_instagram]',
-                '[social whatsapp]',
-                '[social_whatsapp]',
-                '[social_twitter]',
-                '[social_linkedin]',
-                '[social_youtube]',
-                '[social_tiktok]',
-                '[social_pinterest]'
-            ];
-            
-            // Find all links that might contain placeholders
-            const allLinks = document.querySelectorAll('a[href]');
-            
-            allLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                
-                // Check if href contains any placeholder
-                const hasPlaceholder = socialPlaceholders.some(placeholder => 
-                    href && href.includes(placeholder)
-                );
-                
-                if (hasPlaceholder) {
-                    // Prevent navigation
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    });
-                    
-                    // Add visual indication that link is disabled
-                    link.style.cursor = 'not-allowed';
-                    link.style.opacity = '0.6';
-                    link.setAttribute('aria-disabled', 'true');
-                    link.setAttribute('title', 'Social media link not configured');
-                    
-                    // Remove target="_blank" to prevent opening empty tabs
-                    link.removeAttribute('target');
-                    link.removeAttribute('rel');
-                }
-            });
-        })();
-        } // End of initContactForm
-        
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initContactForm);
+
+        var currentPagePath = window.location.pathname;
+        if (window.ZAPPY_CONFIG && window.ZAPPY_CONFIG.currentPagePath) {
+            currentPagePath = window.ZAPPY_CONFIG.currentPagePath;
         } else {
-            // DOM is already ready, initialize immediately
-            initContactForm();
+            try {
+                var p = new URLSearchParams(window.location.search).get('page');
+                if (p) currentPagePath = p;
+            } catch (ignored) {}
         }
-    })(); // End of IIFE
+
+        var theForm = this;
+        try {
+            console.log('📧 Zappy: Sending contact form to backend API...');
+            var apiBase = (window.ZAPPY_API_BASE || 'https://api.zappy5.com').replace(/\/$/, '');
+            var payload = {
+                websiteId: '23866273-c4f2-4387-bc80-50781a259e8d',
+                name: resolvedName,
+                email: resolvedEmail,
+                subject: resolvedSubject,
+                message: resolvedMessage,
+                phone: resolvedPhone,
+                currentPagePath: currentPagePath
+            };
+            if (Object.keys(extraFields).length > 0) {
+                payload.extraFields = extraFields;
+            }
+            var response = await fetch(apiBase + '/api/email/contact-form', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            var result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ Zappy: Contact form data sent successfully to backend');
+
+                // Thank-you page redirect
+                if (result.thankYouPagePath && result.ticketNumber) {
+                    var ticketParam = 'ticket=' + encodeURIComponent(result.ticketNumber);
+                    var isPreview = window.location.pathname.indexOf('/preview') !== -1;
+                    var thankYouUrl;
+                    if (isPreview && window.ZAPPY_CONFIG) {
+                        var wid = window.ZAPPY_CONFIG.websiteId || '23866273-c4f2-4387-bc80-50781a259e8d';
+                        var pt = window.location.pathname.indexOf('fullscreen') !== -1 ? 'preview-fullscreen' : 'preview';
+                        thankYouUrl = window.location.origin + '/api/website/' + pt + '/' + wid + '?page=' + encodeURIComponent(result.thankYouPagePath) + '&' + ticketParam;
+                        if (window.ZAPPY_CONFIG.authToken) thankYouUrl += '&auth_token=' + encodeURIComponent(window.ZAPPY_CONFIG.authToken);
+                    } else {
+                        thankYouUrl = result.thankYouPagePath + '?' + ticketParam;
+                    }
+                    window.location.href = thankYouUrl;
+                    return;
+                }
+
+                var _siteLang = document.documentElement.lang || '';
+                var _isHeSite = _siteLang === 'he' || (_siteLang !== 'ar' && document.documentElement.dir === 'rtl');
+                var _isArSite = _siteLang === 'ar';
+                var _successFallback = _isHeSite ? 'ההודעה שלך נשלחה בהצלחה! נחזור אליך בהקדם.' : _isArSite ? 'تم إرسال رسالتك بنجاح! سنرد عليك قريبًا.' : 'Thank you for your message! We\'ll get back to you soon.';
+                zappyNotify(result.message || _successFallback, 'success');
+                theForm.reset();
+            } else {
+                console.log('⚠️ Zappy: Backend returned error:', result.error);
+                var _isHeSiteErr = _siteLang === 'he' || (_siteLang !== 'ar' && document.documentElement.dir === 'rtl');
+                var _isArSiteErr = _siteLang === 'ar';
+                var _errFallback = _isHeSiteErr ? 'שליחת ההודעה נכשלה. אנא נסו שוב.' : _isArSiteErr ? 'فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.' : 'Failed to send message. Please try again.';
+                zappyNotify(result.error || _errFallback, 'error');
+            }
+        } catch (error) {
+            console.error('❌ Zappy: Failed to send to backend API:', error);
+            var _isHeSiteNet = _siteLang === 'he' || (_siteLang !== 'ar' && document.documentElement.dir === 'rtl');
+            var _isArSiteNet = _siteLang === 'ar';
+            var _netFallback = _isHeSiteNet ? 'לא ניתן לשלוח הודעה כרגע. אנא נסו שוב מאוחר יותר.' : _isArSiteNet ? 'لا يمكن إرسال الرسالة الآن. يرجى المحاولة مرة أخرى لاحقًا.' : 'Unable to send message right now. Please try again later.';
+            zappyNotify(_netFallback, 'error');
+        } finally {
+            if (submitBtn) {
+                if (submitBtn.tagName === 'INPUT') submitBtn.value = originalText;
+                else submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        }, true);
+
+        console.log('✅ Zappy: Contact form API integration initialized');
+    } // End of initContactFormIntegration
     
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initContactFormIntegration);
+    } else {
+        initContactFormIntegration();
+    }
+})();
 
 
 /* ZAPPY_PUBLISHED_LIGHTBOX_RUNTIME */
