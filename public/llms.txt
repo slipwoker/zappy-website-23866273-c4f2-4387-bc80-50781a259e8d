@@ -1,0 +1,79 @@
+# Business — Generative Engine Optimization Map
+
+---
+
+## Pages
+
+### בית
+https://example.com
+עוגות מעוצבות לאירועים ועיצובי פירות שיגנבו את ההצגה. לאה קליין יוצרת יצירות מופת קולינריות שמשלבות טעם מושלם עם עיצוב ויזואלי מרהיב. גלי את הקסם עכשיו!
+
+### שירותים
+https://example.com/services
+ממגש פירות מעוצב ליום הולדת ועד עוגות חתונה מותאמות אישית — כל יצירה נבנית בקפידה רבה. גלי את מגוון השירותים של לאה קליין והזמיני את הפלא שלך היום!
+
+### אודות
+https://example.com/about
+לאה קליין היא קונדיטורית ומעצבת מזון עם תשוקה עמוקה לאמנות אכילה. גלי את הסיפור שמאחורי עיצובי הפירות המרהיבים והעוגות שהפכו לאירועים לבלתי נשכחים.
+
+### צור קשר
+https://example.com/contact
+רוצה עיצובי פירות לחתונה או עוגה מעוצבת לאירוע מיוחד? צרי קשר עם לאה קליין עוד היום ונבנה יחד את היצירה שתגרום לכולם לעצור ולהתפעל. אל תחכי!
+
+### Products
+https://example.com/products
+המוצרים שלנו - לאה קליין
+
+### Cart
+https://example.com/cart
+עגלת הקניות שלך
+
+### Checkout
+https://example.com/checkout
+תשלום
+
+### Login
+https://example.com/login
+התחברות לקוחות
+
+### Account
+https://example.com/account
+החשבון שלי
+
+### Order Success
+https://example.com/order-success
+תודה על ההזמנה
+
+### Product Detail
+https://example.com/product/:slug
+פרטי המוצר - לאה קליין
+
+### Category
+https://example.com/category/:slug
+מוצרים - לאה קליין
+
+## Legal & Policy
+
+### Privacy Policy
+https://example.com/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://example.com/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://example.com/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+# Business Context (for LLM understanding)
+
+## About Business
+---
+
+# Additional Resources
+
+- **Sitemap**: https://example.com/sitemap.xml
+- **Robots.txt**: https://example.com/robots.txt
