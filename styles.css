@@ -9746,6 +9746,15 @@ body.accessibility-widget-visible ._access-menu {
   display: none !important;
 }
 
+#index-showcase-section > .zappy-resizable-hover:first-child {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+}
+
 /* ========== EMPTY SUBMENU HIDING (Auto-added by Zappy) ========== */
 .sub-menu:empty,
 .dropdown-menu:empty,
