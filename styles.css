@@ -2836,13 +2836,12 @@ main { margin-top: 0 !important; padding-top: 0 !important; }
   }
 }
 
-/* index-showcase */
 .index-showcase-section {
   position: relative;
   overflow: visible;
   background-color: var(--bg-light);
   color: var(--text-dark);
-  padding: 120px 0 120px;
+  padding: 60px 0px;
   direction: rtl;
 }
 
@@ -9743,6 +9742,10 @@ body.accessibility-widget-visible ._access-menu {
 /* /Zappy custom logo size */
 
 
+#index-showcase-section > .zappy-resizable-hover:first-child {
+  display: none !important;
+}
+
 /* ========== EMPTY SUBMENU HIDING (Auto-added by Zappy) ========== */
 .sub-menu:empty,
 .dropdown-menu:empty,
@@ -10369,6 +10372,12 @@ section[data-hero-type] {
 /* ========== END HORIZONTAL-PAIR GRID MEDIA FIX ========== */
 
 /* ========== END GRID RESPONSIVE FIX ========== */
+
+/* RTL footer contact: icon on the right (start) side, text on the left */
+html[dir="rtl"] .footer-contact li { flex-direction: row !important; }
+html[dir="rtl"] .footer-contact .contact-icon { order: 0 !important; }
+html[dir="rtl"] .footer-contact .contact-text { order: 1 !important; }
+html[dir="rtl"] .footer-contact li > a { flex-direction: row !important; }
 
 
 /* ZAPPY_VARIANT_OPTION_STATES */
