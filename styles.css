@@ -7562,6 +7562,443 @@ nav.navbar .sub-menu li a:hover { color: #C6A15B !important; background-color: r
   }
 }
 /* === NAVBAR STYLE OVERRIDES END === */
+
+
+/* Legal Pages Content Styles */
+
+/* Legal Pages Content Styles */
+.legal-page-content {
+  padding: 120px 0 60px;
+  min-height: 60vh;
+  color: inherit;
+}
+
+.legal-page-content .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.legal-page-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: inherit;
+}
+
+.legal-page-content .last-updated {
+  color: #666;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.legal-page-content h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: inherit;
+}
+
+.legal-page-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.legal-page-content ul {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+[dir="rtl"] .legal-page-content ul {
+  padding-left: 0;
+  padding-right: 1.5rem;
+}
+
+.legal-page-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.legal-page-content .contact-box,
+.legal-page-content .contact-info {
+  background: rgba(0, 0, 0, 0.03);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.legal-page-content .contact-box a,
+.legal-page-content .contact-info a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.legal-page-content .contact-box a:hover,
+.legal-page-content .contact-info a:hover {
+  opacity: 0.8;
+}
+
+.legal-page-content .important-notice,
+.legal-page-content .legal-reference {
+  background: rgba(0, 0, 0, 0.03);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  border-left: 4px solid currentColor;
+}
+
+[dir="rtl"] .legal-page-content .important-notice,
+[dir="rtl"] .legal-page-content .legal-reference {
+  border-left: none;
+  border-right: 4px solid currentColor;
+}
+
+
+/* Cookie Consent Styles */
+
+/* Cookie Consent Customizations */
+:root {
+  --cc-btn-primary-bg: #3b82f6;
+  --cc-btn-primary-border: #3b82f6;
+  --cc-btn-primary-hover-bg: #2269dd;
+}
+
+#cc--main {
+  font-family: inherit !important;
+}
+
+.cc-btn.cc--btn-primary {
+  background-color: var(--cc-btn-primary-bg) !important;
+  border-color: var(--cc-btn-primary-border) !important;
+}
+
+.cc-btn.cc--btn-primary:hover {
+  background-color: var(--cc-btn-primary-hover-bg) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #cc--main .cc__btn {
+    font-size: 14px !important;
+    padding: 8px 16px !important;
+  }
+  
+  .cc__modal .cc__modal-content {
+    margin: 10px !important;
+  }
+}
+
+/* Cookie preferences button in footer */
+.cookie-preferences-btn:hover {
+  text-decoration: none !important;
+}
+
+/* Accessibility Styles */
+
+/* Basic Accessibility Enhancements */
+:root {
+  --accessibility-focus: #1C1023;
+}
+
+/* Skip link styles */
+.skip-link:focus {
+  position: absolute !important;
+  top: 6px !important;
+  left: 6px !important;
+  background: #000 !important;
+  color: white !important;
+  padding: 8px !important;
+  text-decoration: none !important;
+  z-index: 10000 !important;
+  border-radius: 4px !important;
+}
+
+/* Enhanced focus indicators */
+*:focus {
+  outline: 2px solid var(--accessibility-focus) !important;
+  outline-offset: 2px !important;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  * {
+    border-color: currentColor !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+
+/* Custom Accessibility Toolbar Styling - Zappy Style */
+
+/* Main button icon - ONLY target the floating button, not menu elements */
+#mic-access-tool-general-button {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* AGGRESSIVELY hide all text in the button */
+#mic-access-tool-general-button,
+#mic-access-tool-general-button *:not(svg):not(path):not(circle):not(rect):not(polygon):not(ellipse):not(line):not(polyline):not(g) {
+  font-size: 0 !important;
+  color: transparent !important;
+  text-indent: -9999px !important;
+  line-height: 0 !important;
+  letter-spacing: -999em !important;
+  white-space: nowrap !important;
+}
+
+/* Hide text nodes specifically */
+#mic-access-tool-general-button::before,
+#mic-access-tool-general-button::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Hover state - keep text hidden */
+#mic-access-tool-general-button:hover {
+  background-color: rgba(28, 16, 35, 0.1) !important;
+  background: rgba(28, 16, 35, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(28, 16, 35, 0.2) !important;
+  font-size: 0 !important;
+  color: transparent !important;
+  text-indent: -9999px !important;
+}
+
+/* Target the SVG and make it the selected color */
+#mic-access-tool-general-button svg {
+  width: 18px !important;
+  height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  /* Convert green to selected color using dynamic CSS filter */
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(0deg) brightness(100%) contrast(100%) !important;
+}
+
+/* Also directly target all SVG elements to be the selected color */
+#mic-access-tool-general-button svg,
+#mic-access-tool-general-button svg *,
+#mic-access-tool-general-button svg path,
+#mic-access-tool-general-button svg circle,
+#mic-access-tool-general-button svg rect,
+#mic-access-tool-general-button svg polygon,
+#mic-access-tool-general-button svg ellipse,
+#mic-access-tool-general-button svg line,
+#mic-access-tool-general-button svg polyline,
+#mic-access-tool-general-button svg g {
+  fill: #1C1023 !important;
+  stroke: #1C1023 !important;
+  color: #1C1023 !important;
+}
+
+/* Target images if the icon is an img instead of SVG */
+#mic-access-tool-general-button img,
+#mic-access-tool-general-button i {
+  width: 18px !important;
+  height: 18px !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  /* Convert green to selected color using dynamic filter */
+  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(0deg) brightness(100%) contrast(100%) !important;
+}
+
+/* Menu header with selected color */
+#mic-access-tool-box .mic-access-tool-box-header,
+.mic-access-tool-box-header,
+div[id*="mic-access-tool-box"] header,
+div[id*="mic-access-tool-box"] .header {
+  background: #1C1023 !important;
+  color: white !important;
+}
+
+/* Make header text white - title and close button */
+#mic-access-tool-box .mic-access-tool-box-header *,
+.mic-access-tool-box-header *,
+div[id*="mic-access-tool-box"] header *,
+div[id*="mic-access-tool-box"] .header * {
+  color: white !important;
+}
+
+/* Close button text */
+#mic-access-tool-box .mic-access-tool-box-header button,
+#mic-access-tool-box .mic-access-tool-box-header a,
+#mic-access-tool-box [class*="close"],
+#mic-access-tool-box button[title*="close"],
+#mic-access-tool-box button[title*="Close"] {
+  color: white !important;
+  background: transparent !important;
+}
+
+/* Active buttons and highlights in menu */
+#mic-access-tool-box button.active,
+#mic-access-tool-box button:hover,
+div[id*="mic-access-tool-box"] button.active,
+div[id*="mic-access-tool-box"] button:hover {
+  border-color: #1C1023 !important;
+  color: #1C1023 !important;
+  background-color: rgba(28, 16, 35, 0.1) !important;
+}
+
+/* Reset button */
+#mic-access-tool-box button[title*="reset"],
+#mic-access-tool-box button[title*="Reset"],
+#mic-access-tool-box [class*="reset"],
+div[id*="mic-access-tool-box"] button[class*="reset"] {
+  background: #1C1023 !important;
+  color: white !important;
+}
+
+/* Reset button text and icon */
+#mic-access-tool-box button[title*="reset"] *,
+#mic-access-tool-box button[title*="Reset"] *,
+#mic-access-tool-box [class*="reset"] *,
+div[id*="mic-access-tool-box"] button[class*="reset"] * {
+  color: white !important;
+}
+
+/* Hide accessibility widget by default on all screen sizes */
+/* TODO: Can be re-enabled in the future by removing display: none */
+/* The widget can be shown via ALT+A keyboard shortcut (desktop only) */
+/* Target Mickidum accessibility button with high specificity */
+#mic-access-tool-general-button,
+.mic-access-tool-general-button,
+#mic-init-access-tool .mic-access-tool-general-button,
+#mic-init-access-tool #mic-access-tool-general-button,
+._access-icon {
+  display: none !important; /* Hidden by default - can be re-enabled */
+}
+
+/* Target Mickidum accessibility menu with high specificity */
+#mic-access-tool-box,
+.mic-access-tool-box,
+#mic-init-access-tool #mic-access-tool-box,
+div[id*="mic-access-tool-box"],
+._access-menu {
+  display: none !important; /* Hidden by default - can be re-enabled */
+}
+
+/* Show accessibility widget when ALT+A keyboard shortcut is used (desktop only) */
+body.accessibility-widget-visible #mic-access-tool-general-button,
+body.accessibility-widget-visible .mic-access-tool-general-button,
+body.accessibility-widget-visible #mic-init-access-tool .mic-access-tool-general-button,
+body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-general-button,
+body.accessibility-widget-visible ._access-icon {
+  display: flex !important; /* Show button when visible class is added */
+}
+
+body.accessibility-widget-visible #mic-access-tool-box,
+body.accessibility-widget-visible .mic-access-tool-box,
+body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-box,
+body.accessibility-widget-visible div[id*="mic-access-tool-box"],
+body.accessibility-widget-visible ._access-menu {
+  display: block !important; /* Show menu when visible class is added */
+}
+
+/* On mobile, ensure it stays hidden */
+@media (max-width: 768px) {
+  /* Hide the accessibility button on mobile - higher specificity */
+  #mic-access-tool-general-button,
+  .mic-access-tool-general-button,
+  #mic-init-access-tool .mic-access-tool-general-button,
+  #mic-init-access-tool #mic-access-tool-general-button,
+  ._access-icon {
+    display: none !important; /* Hidden on mobile - can be re-enabled */
+  }
+  
+  /* Hide the accessibility menu on mobile - higher specificity */
+  #mic-access-tool-box,
+  .mic-access-tool-box,
+  #mic-init-access-tool #mic-access-tool-box,
+  div[id*="mic-access-tool-box"],
+  ._access-menu {
+    display: none !important; /* Hidden on mobile - can be re-enabled */
+  }
+  
+  /* Ensure mobile never shows widget even with keyboard shortcut */
+  body.accessibility-widget-visible #mic-access-tool-general-button,
+  body.accessibility-widget-visible .mic-access-tool-general-button,
+  body.accessibility-widget-visible #mic-init-access-tool .mic-access-tool-general-button,
+  body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-general-button,
+  body.accessibility-widget-visible ._access-icon,
+  body.accessibility-widget-visible #mic-access-tool-box,
+  body.accessibility-widget-visible .mic-access-tool-box,
+  body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-box,
+  body.accessibility-widget-visible div[id*="mic-access-tool-box"],
+  body.accessibility-widget-visible ._access-menu {
+    display: none !important;
+  }
+}
+/* Zappy custom logo size (desktop only — mobile stays at 110px/35px) */
+@media (min-width: 769px) {
+  .logo, img.logo, .logo img, .logo-link img, .nav-brand img {
+    max-height: none !important;
+    height: 70px !important;
+    max-width: 280px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
+  .nav-container {
+    min-height: 100px !important;
+  }
+}
+/* /Zappy custom logo size */
+
+
+#index-showcase-section > .zappy-resizable-hover:first-child {
+  display: none !important;
+}
+
+#index-showcase-section > .zappy-resizable-hover:first-child {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+}
+
 /* ==ZAPPY E-COMMERCE CSS== */
 /* E-commerce Enhancement Styles - Inherits site theme colors */
 .ecommerce-page {
@@ -7780,7 +8217,7 @@ nav.navbar .sub-menu li a:hover { color: #C6A15B !important; background-color: r
   min-height: 0;
 }
 .product-card.detailed .price { font-size: 20px; padding-top: 8px; }
-.product-card.detailed .add-to-cart { display: block; padding: 12px; margin: 0 14px 14px; align-self: stretch; box-sizing: border-box; }
+.product-card.detailed .add-to-cart { display: block; width: auto; padding: 12px; margin: 0 14px 14px; align-self: stretch; box-sizing: border-box; }
 
 .product-filters { display: flex; gap: 12px; flex-wrap: wrap; }
 .filter-btn { padding: 8px 16px; border: 1px solid var(--border-color, #e5e7eb); border-radius: 20px; background: var(--surface-color, var(--surface, #fff)); cursor: pointer; color: var(--text-color, var(--text, #374151)); transition: all 0.2s; }
@@ -7893,7 +8330,7 @@ nav.navbar .sub-menu li a:hover { color: #C6A15B !important; background-color: r
   .products-main .product-grid:not(.view-list) .product-card p { font-size: 11px !important; overflow: hidden !important; margin: 0 0 4px 0 !important; -webkit-line-clamp: 1 !important; display: -webkit-box !important; -webkit-box-orient: vertical !important; }
   .products-main .product-grid:not(.view-list) .product-card.detailed p { -webkit-line-clamp: 5 !important; }
   .products-main .product-grid:not(.view-list) .product-card .price { font-size: 14px !important; padding-top: 2px !important; }
-  .products-main .product-grid:not(.view-list) .product-card .add-to-cart { padding: 6px 10px !important; font-size: 11px !important; margin: 0 10px 10px !important; }
+  .products-main .product-grid:not(.view-list) .product-card .add-to-cart { width: auto !important; padding: 6px 10px !important; font-size: 11px !important; margin: 0 10px 10px !important; }
   .product-grid.view-list { display: flex !important; flex-direction: column !important; gap: 10px !important; }
   .product-grid.view-list .product-card { flex-direction: row; flex-wrap: nowrap; align-items: stretch; overflow: hidden; max-height: none; padding: 0 !important; gap: 0; }
   .product-grid.view-list .product-card .product-card-inner { flex: 1 1 0%; flex-direction: row; gap: 0; min-width: 0; }
@@ -8227,6 +8664,33 @@ nav.navbar .sub-menu li a:hover { color: #C6A15B !important; background-color: r
 .product-not-found, .category-not-found { text-align: center; padding: 60px 20px; }
 .product-not-found h2, .category-not-found h2 { font-size: 1.5rem; color: var(--text-color, #1f2937); margin-bottom: 16px; }
 .related-products-section { padding: 40px 0; border-top: 1px solid var(--border-color, #e5e7eb); margin-top: 40px; }
+/* Upsells (frequently bought together) on the product detail page.
+   Rendered inline with the rest of the product info — no card chrome
+   (border / background / radius) so it blends with the surrounding
+   variant selectors and stock badge. */
+.product-upsells { background: transparent; border: none; border-radius: 0; padding: 0; margin: 16px 0; }
+.upsells-header { margin: 0 0 8px; }
+.upsells-title { margin: 0 0 2px; font-size: 1rem; font-weight: 600; color: var(--text-color, #1f2937); line-height: 1.3; }
+.upsells-subtitle { margin: 0; font-size: 0.875rem; color: var(--text-secondary, #6b7280); }
+.upsells-list { list-style: none !important; padding: 0 !important; margin: 0 !important; }
+.upsell-row { list-style: none !important; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; outline: none; }
+.upsell-row::marker { content: '' !important; }
+.upsell-row::before { content: none !important; }
+.upsell-row:first-child { border-top: none; }
+.upsell-row:focus-visible { box-shadow: inset 0 0 0 2px var(--primary-color, #ff0083); border-radius: 4px; }
+.upsell-row.is-out-of-stock { cursor: not-allowed; opacity: 0.55; }
+.upsell-checkbox { width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; accent-color: var(--primary-color, #ff0083); margin: 0; }
+.upsell-row.is-out-of-stock .upsell-checkbox { cursor: not-allowed; }
+.upsell-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.upsell-name { color: var(--text-color, #1f2937); font-weight: 500; font-size: 0.95rem; text-decoration: none; line-height: 1.3; word-break: break-word; max-width: 100%; }
+.upsell-name:hover { color: var(--primary-color, #ff0083); text-decoration: underline; }
+.upsell-stock-badge { display: inline-block; font-size: 0.7rem; color: #b91c1c; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.upsell-price { color: var(--text-color, #1f2937); font-weight: 600; font-size: 0.95rem; flex-shrink: 0; white-space: nowrap; }
+.upsell-price.upsell-price-free { color: #047857; background: #d1fae5; padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.upsells-total { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-color, #e5e7eb); font-size: 0.95rem; color: var(--text-secondary, #6b7280); }
+.upsells-total-amount { color: var(--text-color, #1f2937); font-size: 1.1rem; font-weight: 700; }
+.upsells-total-count { font-size: 0.85rem; color: var(--text-secondary, #6b7280); }
+@media (max-width: 480px) { .upsell-row { gap: 8px; } }
 /* Category Page */
 .category-page-section { padding: 20px 0; }
 .category-header { margin-bottom: 32px; }
@@ -9319,441 +9783,61 @@ body[dir="rtl"] .zappy-catalog-menu .catalog-menu-categories,
 }
 /* V2 E-COMMERCE THEME OVERRIDES: Now handled by ecommerceV2GenerationService.js */
 /* ==END ZAPPY E-COMMERCE CSS== */
-
-/* Legal Pages Content Styles */
-
-/* Legal Pages Content Styles */
-.legal-page-content {
-  padding: 120px 0 60px;
-  min-height: 60vh;
-  color: inherit;
-}
-
-.legal-page-content .container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.legal-page-content h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: inherit;
-}
-
-.legal-page-content .last-updated {
-  color: #666;
-  margin-bottom: 2rem;
-  font-style: italic;
-}
-
-.legal-page-content h2 {
-  font-size: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: inherit;
-}
-
-.legal-page-content p {
-  margin-bottom: 1rem;
-  line-height: 1.7;
-}
-
-.legal-page-content ul {
-  margin-bottom: 1.5rem;
-  padding-left: 1.5rem;
-}
-
-[dir="rtl"] .legal-page-content ul {
-  padding-left: 0;
-  padding-right: 1.5rem;
-}
-
-.legal-page-content li {
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-}
-
-.legal-page-content .contact-box,
-.legal-page-content .contact-info {
-  background: rgba(0, 0, 0, 0.03);
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-top: 1.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.legal-page-content .contact-box a,
-.legal-page-content .contact-info a {
-  color: inherit;
-  text-decoration: underline;
-}
-
-.legal-page-content .contact-box a:hover,
-.legal-page-content .contact-info a:hover {
-  opacity: 0.8;
-}
-
-.legal-page-content .important-notice,
-.legal-page-content .legal-reference {
-  background: rgba(0, 0, 0, 0.03);
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  margin: 1.5rem 0;
-  border-left: 4px solid currentColor;
-}
-
-[dir="rtl"] .legal-page-content .important-notice,
-[dir="rtl"] .legal-page-content .legal-reference {
-  border-left: none;
-  border-right: 4px solid currentColor;
-}
-
-
-/* Cookie Consent Styles */
-
-/* Cookie Consent Customizations */
-:root {
-  --cc-btn-primary-bg: #3b82f6;
-  --cc-btn-primary-border: #3b82f6;
-  --cc-btn-primary-hover-bg: #2269dd;
-}
-
-#cc--main {
-  font-family: inherit !important;
-}
-
-.cc-btn.cc--btn-primary {
-  background-color: var(--cc-btn-primary-bg) !important;
-  border-color: var(--cc-btn-primary-border) !important;
-}
-
-.cc-btn.cc--btn-primary:hover {
-  background-color: var(--cc-btn-primary-hover-bg) !important;
-}
-
-/* Responsive adjustments */
+/* mobile-submenu-overflow-fix */
 @media (max-width: 768px) {
-  #cc--main .cc__btn {
-    font-size: 14px !important;
-    padding: 8px 16px !important;
-  }
-  
-  .cc__modal .cc__modal-content {
-    margin: 10px !important;
-  }
-}
-
-/* Cookie preferences button in footer */
-.cookie-preferences-btn:hover {
-  text-decoration: none !important;
-}
-
-/* Accessibility Styles */
-
-/* Basic Accessibility Enhancements */
-:root {
-  --accessibility-focus: #1C1023;
-}
-
-/* Skip link styles */
-.skip-link:focus {
-  position: absolute !important;
-  top: 6px !important;
-  left: 6px !important;
-  background: #000 !important;
-  color: white !important;
-  padding: 8px !important;
-  text-decoration: none !important;
-  z-index: 10000 !important;
-  border-radius: 4px !important;
-}
-
-/* Enhanced focus indicators */
-*:focus {
-  outline: 2px solid var(--accessibility-focus) !important;
-  outline-offset: 2px !important;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  * {
-    border-color: currentColor !important;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Screen reader only content */
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
-
-/* Custom Accessibility Toolbar Styling - Zappy Style */
-
-/* Main button icon - ONLY target the floating button, not menu elements */
-#mic-access-tool-general-button {
-  background-color: transparent !important;
-  background: transparent !important;
-  border: none !important;
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  line-height: 0 !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-/* AGGRESSIVELY hide all text in the button */
-#mic-access-tool-general-button,
-#mic-access-tool-general-button *:not(svg):not(path):not(circle):not(rect):not(polygon):not(ellipse):not(line):not(polyline):not(g) {
-  font-size: 0 !important;
-  color: transparent !important;
-  text-indent: -9999px !important;
-  line-height: 0 !important;
-  letter-spacing: -999em !important;
-  white-space: nowrap !important;
-}
-
-/* Hide text nodes specifically */
-#mic-access-tool-general-button::before,
-#mic-access-tool-general-button::after {
-  content: none !important;
-  display: none !important;
-}
-
-/* Hover state - keep text hidden */
-#mic-access-tool-general-button:hover {
-  background-color: rgba(28, 16, 35, 0.1) !important;
-  background: rgba(28, 16, 35, 0.1) !important;
-  box-shadow: 0 2px 8px rgba(28, 16, 35, 0.2) !important;
-  font-size: 0 !important;
-  color: transparent !important;
-  text-indent: -9999px !important;
-}
-
-/* Target the SVG and make it the selected color */
-#mic-access-tool-general-button svg {
-  width: 18px !important;
-  height: 18px !important;
-  max-width: 18px !important;
-  max-height: 18px !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-  /* Convert green to selected color using dynamic CSS filter */
-  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(0deg) brightness(100%) contrast(100%) !important;
-}
-
-/* Also directly target all SVG elements to be the selected color */
-#mic-access-tool-general-button svg,
-#mic-access-tool-general-button svg *,
-#mic-access-tool-general-button svg path,
-#mic-access-tool-general-button svg circle,
-#mic-access-tool-general-button svg rect,
-#mic-access-tool-general-button svg polygon,
-#mic-access-tool-general-button svg ellipse,
-#mic-access-tool-general-button svg line,
-#mic-access-tool-general-button svg polyline,
-#mic-access-tool-general-button svg g {
-  fill: #1C1023 !important;
-  stroke: #1C1023 !important;
-  color: #1C1023 !important;
-}
-
-/* Target images if the icon is an img instead of SVG */
-#mic-access-tool-general-button img,
-#mic-access-tool-general-button i {
-  width: 18px !important;
-  height: 18px !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  /* Convert green to selected color using dynamic filter */
-  filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(0deg) brightness(100%) contrast(100%) !important;
-}
-
-/* Menu header with selected color */
-#mic-access-tool-box .mic-access-tool-box-header,
-.mic-access-tool-box-header,
-div[id*="mic-access-tool-box"] header,
-div[id*="mic-access-tool-box"] .header {
-  background: #1C1023 !important;
-  color: white !important;
-}
-
-/* Make header text white - title and close button */
-#mic-access-tool-box .mic-access-tool-box-header *,
-.mic-access-tool-box-header *,
-div[id*="mic-access-tool-box"] header *,
-div[id*="mic-access-tool-box"] .header * {
-  color: white !important;
-}
-
-/* Close button text */
-#mic-access-tool-box .mic-access-tool-box-header button,
-#mic-access-tool-box .mic-access-tool-box-header a,
-#mic-access-tool-box [class*="close"],
-#mic-access-tool-box button[title*="close"],
-#mic-access-tool-box button[title*="Close"] {
-  color: white !important;
-  background: transparent !important;
-}
-
-/* Active buttons and highlights in menu */
-#mic-access-tool-box button.active,
-#mic-access-tool-box button:hover,
-div[id*="mic-access-tool-box"] button.active,
-div[id*="mic-access-tool-box"] button:hover {
-  border-color: #1C1023 !important;
-  color: #1C1023 !important;
-  background-color: rgba(28, 16, 35, 0.1) !important;
-}
-
-/* Reset button */
-#mic-access-tool-box button[title*="reset"],
-#mic-access-tool-box button[title*="Reset"],
-#mic-access-tool-box [class*="reset"],
-div[id*="mic-access-tool-box"] button[class*="reset"] {
-  background: #1C1023 !important;
-  color: white !important;
-}
-
-/* Reset button text and icon */
-#mic-access-tool-box button[title*="reset"] *,
-#mic-access-tool-box button[title*="Reset"] *,
-#mic-access-tool-box [class*="reset"] *,
-div[id*="mic-access-tool-box"] button[class*="reset"] * {
-  color: white !important;
-}
-
-/* Hide accessibility widget by default on all screen sizes */
-/* TODO: Can be re-enabled in the future by removing display: none */
-/* The widget can be shown via ALT+A keyboard shortcut (desktop only) */
-/* Target Mickidum accessibility button with high specificity */
-#mic-access-tool-general-button,
-.mic-access-tool-general-button,
-#mic-init-access-tool .mic-access-tool-general-button,
-#mic-init-access-tool #mic-access-tool-general-button,
-._access-icon {
-  display: none !important; /* Hidden by default - can be re-enabled */
-}
-
-/* Target Mickidum accessibility menu with high specificity */
-#mic-access-tool-box,
-.mic-access-tool-box,
-#mic-init-access-tool #mic-access-tool-box,
-div[id*="mic-access-tool-box"],
-._access-menu {
-  display: none !important; /* Hidden by default - can be re-enabled */
-}
-
-/* Show accessibility widget when ALT+A keyboard shortcut is used (desktop only) */
-body.accessibility-widget-visible #mic-access-tool-general-button,
-body.accessibility-widget-visible .mic-access-tool-general-button,
-body.accessibility-widget-visible #mic-init-access-tool .mic-access-tool-general-button,
-body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-general-button,
-body.accessibility-widget-visible ._access-icon {
-  display: flex !important; /* Show button when visible class is added */
-}
-
-body.accessibility-widget-visible #mic-access-tool-box,
-body.accessibility-widget-visible .mic-access-tool-box,
-body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-box,
-body.accessibility-widget-visible div[id*="mic-access-tool-box"],
-body.accessibility-widget-visible ._access-menu {
-  display: block !important; /* Show menu when visible class is added */
-}
-
-/* On mobile, ensure it stays hidden */
-@media (max-width: 768px) {
-  /* Hide the accessibility button on mobile - higher specificity */
-  #mic-access-tool-general-button,
-  .mic-access-tool-general-button,
-  #mic-init-access-tool .mic-access-tool-general-button,
-  #mic-init-access-tool #mic-access-tool-general-button,
-  ._access-icon {
-    display: none !important; /* Hidden on mobile - can be re-enabled */
-  }
-  
-  /* Hide the accessibility menu on mobile - higher specificity */
-  #mic-access-tool-box,
-  .mic-access-tool-box,
-  #mic-init-access-tool #mic-access-tool-box,
-  div[id*="mic-access-tool-box"],
-  ._access-menu {
-    display: none !important; /* Hidden on mobile - can be re-enabled */
-  }
-  
-  /* Ensure mobile never shows widget even with keyboard shortcut */
-  body.accessibility-widget-visible #mic-access-tool-general-button,
-  body.accessibility-widget-visible .mic-access-tool-general-button,
-  body.accessibility-widget-visible #mic-init-access-tool .mic-access-tool-general-button,
-  body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-general-button,
-  body.accessibility-widget-visible ._access-icon,
-  body.accessibility-widget-visible #mic-access-tool-box,
-  body.accessibility-widget-visible .mic-access-tool-box,
-  body.accessibility-widget-visible #mic-init-access-tool #mic-access-tool-box,
-  body.accessibility-widget-visible div[id*="mic-access-tool-box"],
-  body.accessibility-widget-visible ._access-menu {
-    display: none !important;
-  }
-}
-/* Zappy custom logo size (desktop only — mobile stays at 110px/35px) */
-@media (min-width: 769px) {
-  .logo, img.logo, .logo img, .logo-link img, .nav-brand img {
+  .navbar .sub-menu.mobile-expanded,
+  .nav-menu .sub-menu.mobile-expanded,
+  #navMenu .sub-menu.mobile-expanded,
+  .zappy-products-dropdown .sub-menu.mobile-expanded,
+  .zappy-products-dropdown > .sub-menu.mobile-expanded,
+  .menu-item-has-children > .sub-menu.mobile-expanded {
     max-height: none !important;
-    height: 70px !important;
-    max-width: 280px !important;
-    width: auto !important;
-    object-fit: contain !important;
+    overflow-y: visible !important;
   }
-  .nav-container {
-    min-height: 100px !important;
+  .menu-item-has-children,
+  .zappy-products-dropdown,
+  .nav-menu > li.menu-item-has-children {
+    flex-shrink: 0 !important;
+  }
+  .sub-menu a,
+  .navbar .sub-menu a,
+  .navbar .sub-menu li a,
+  nav.navbar .sub-menu li a,
+  .zappy-products-dropdown .sub-menu a {
+    white-space: normal !important;
   }
 }
-/* /Zappy custom logo size */
 
 
-#index-showcase-section > .zappy-resizable-hover:first-child {
-  display: none !important;
+/* zappy-nav-child-indent */
+.zappy-products-dropdown .zappy-nav-child > a,
+.sub-menu .zappy-nav-child > a {
+  padding-left: 28px !important;
+  font-size: 0.9em !important;
+  opacity: 0.85 !important;
+}
+[dir="rtl"] .zappy-products-dropdown .zappy-nav-child > a,
+[dir="rtl"] .sub-menu .zappy-nav-child > a,
+html[lang="he"] .zappy-products-dropdown .zappy-nav-child > a,
+html[lang="he"] .sub-menu .zappy-nav-child > a,
+html[lang="ar"] .zappy-products-dropdown .zappy-nav-child > a,
+html[lang="ar"] .sub-menu .zappy-nav-child > a {
+  padding-left: 0 !important;
+  padding-right: 28px !important;
+}
+.zappy-products-dropdown .zappy-nav-parent > a,
+.sub-menu .zappy-nav-parent > a {
+  font-weight: 600 !important;
+}
+@media (max-width: 768px) {
+  .nav-menu.active,
+  #navMenu.active {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
 }
 
-#index-showcase-section > .zappy-resizable-hover:first-child {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  position: absolute !important;
-}
 
 /* ========== EMPTY SUBMENU HIDING (Auto-added by Zappy) ========== */
 .sub-menu:empty,
@@ -9897,23 +9981,19 @@ nav .sub-menu.zappy-empty-submenu,
 
 
 /* ========== FULLSCREEN HERO OVERFLOW FIX (fullscreen-hero-overflow-fix) ========== */
-/* On mobile (especially iOS Safari where 100vh includes the address bar),
-   the hero card content + padding can exceed the section height.
-   Use 100svh + height:auto so the section grows with its content.
-   Restore padding-bottom for the SVG divider area. */
-
 @media (max-width: 768px) {
+
   section[data-hero-type*="fullscreen"] {
     height: auto !important;
     min-height: 100svh !important;
     padding: 0 0 90px 0 !important;
   }
-  section[data-hero-type*="fullscreen"] > [class*="-container"]:not([class*="bg"]):not([class*="scrim"]):not([class*="divider"]) {
+  section[data-hero-type*="fullscreen"] > [class*="-container"]:not([class*="bg"]):not([class*="scrim"]):not([class*="divider"]),
+  section[data-hero-type*="fullscreen"] > .container {
     padding-bottom: 100px !important;
     min-height: auto !important;
   }
 }
-
 /* ========== END FULLSCREEN HERO OVERFLOW FIX ========== */
 
 /* ========== ORPHANED_ZOOM_IMG_FIX ========== */
@@ -10050,17 +10130,17 @@ nav .sub-menu.zappy-empty-submenu,
     min-width: 0 !important;
   }
   
-  /* CRITICAL: Constrain zoom wrappers on mobile - they often have fixed pixel widths */
+  /* CRITICAL: Constrain zoom wrappers on mobile without breaking saved crop geometry */
   [data-zappy-zoom-wrapper="true"] {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    height: auto !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
   
-  /* Fix zoom wrapper images on mobile - make responsive */
-  /* Exclude images with mobile overrides — those are handled by JS to honor user settings */
-  [data-zappy-zoom-wrapper="true"] img:not([data-zappy-mobile-object-position]):not([data-zappy-mobile-zoom]) {
+  /* Legacy zoom wrappers without saved crop data can still fall back to responsive images. */
+  [data-zappy-zoom-wrapper="true"]:not([data-zappy-zoom-wrapper-width]) img:not([data-zappy-mobile-object-position]):not([data-zappy-mobile-zoom]) {
     position: relative !important;
     width: 100% !important;
     height: auto !important;
@@ -10255,16 +10335,14 @@ nav .sub-menu.zappy-empty-submenu,
   }
 
   /* ========== FULLSCREEN HERO OVERFLOW FIX ========== */
-  /* On mobile (especially iOS Safari where 100vh includes the address bar),
-     the hero card content + padding can exceed the section height.
-     Use min-height instead of height so the section grows with its content.
-     The container also needs padding-bottom to clear the SVG divider area. */
+
   section[data-hero-type*="fullscreen"] {
     height: auto !important;
     min-height: 100svh !important;
     padding: 0 0 90px 0 !important;
   }
-  section[data-hero-type*="fullscreen"] > [class*="-container"]:not([class*="bg"]):not([class*="scrim"]):not([class*="divider"]) {
+  section[data-hero-type*="fullscreen"] > [class*="-container"]:not([class*="bg"]):not([class*="scrim"]):not([class*="divider"]),
+  section[data-hero-type*="fullscreen"] > .container {
     padding-bottom: 100px !important;
     min-height: auto !important;
   }
@@ -10381,12 +10459,6 @@ section[data-hero-type] {
 /* ========== END HORIZONTAL-PAIR GRID MEDIA FIX ========== */
 
 /* ========== END GRID RESPONSIVE FIX ========== */
-
-/* RTL footer contact: icon on the right (start) side, text on the left */
-html[dir="rtl"] .footer-contact li { flex-direction: row !important; }
-html[dir="rtl"] .footer-contact .contact-icon { order: 0 !important; }
-html[dir="rtl"] .footer-contact .contact-text { order: 1 !important; }
-html[dir="rtl"] .footer-contact li > a { flex-direction: row !important; }
 
 
 /* ZAPPY_VARIANT_OPTION_STATES */
@@ -10566,6 +10638,7 @@ html[dir="rtl"] .footer-contact li > a { flex-direction: row !important; }
   text-align: center !important;
   font-size: 1rem !important;
   background: transparent !important;
+  padding: 0 !important;
   -moz-appearance: textfield !important;
 }
 .product-add-row .quantity-selector input::-webkit-inner-spin-button,
@@ -10597,6 +10670,24 @@ html[dir="rtl"] .footer-contact li > a { flex-direction: row !important; }
 }
 
 
+/* ZAPPY_QUANTITY_SELECTOR_FIX */
+.product-info .quantity-selector input,
+.product-add-row .quantity-selector input {
+  padding: 0 !important;
+  -moz-appearance: textfield !important;
+  -webkit-appearance: textfield !important;
+  appearance: textfield !important;
+}
+.product-info .quantity-selector input::-webkit-inner-spin-button,
+.product-info .quantity-selector input::-webkit-outer-spin-button,
+.product-add-row .quantity-selector input::-webkit-inner-spin-button,
+.product-add-row .quantity-selector input::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+  display: none !important;
+}
+
+
 /* ZAPPY_CONTACT_FORM_LAYOUT_FIX */
 form.contact-form, .contact-form { flex-direction: column !important; align-items: stretch !important; }
 form.contact-form > .contact-form-field, .contact-form > .contact-form-field { width: 100% !important; align-self: stretch !important; }
@@ -10613,3 +10704,63 @@ form.contact-form .contact-input, form.contact-form .contact-textarea { width: 1
 [data-zappy-bg-type="color"] { background-image: none !important; background-color: var(--zappy-bg-color, transparent) !important; }
 [data-zappy-bg-type="image"] { background-image: linear-gradient(var(--zappy-bg-overlay, rgba(0,0,0,0)), var(--zappy-bg-overlay, rgba(0,0,0,0))), var(--zappy-bg-image, none) !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
 [data-zappy-bg-type="video"] { background-image: none !important; }
+
+
+/* ZAPPY_IOS_NAVBAR_GAP_FIX */
+/* iOS Safari does not clip overflow-x:hidden on <html>, so a page with any
+   horizontal overflow ends up with visual viewport > layout viewport.
+   position:fixed children anchored with right:0 (the mobile dropdown menu)
+   then pin to the visual viewport right edge — off-screen past the navbar.
+   Companion JS (ZAPPY_IOS_VIEWPORT_GAP_FIX in script.js) measures the gap
+   and exposes it as --ios-viewport-gap; this rule uses it to shift the
+   menu inward so it lands on the real layout-viewport right edge. On every
+   other browser the gap is 0 and the rule is a no-op.
+
+   The selector list below intentionally mirrors the RTL selectors used
+   elsewhere in the stylesheet — we need equal-or-higher specificity to
+   win the cascade (!important alone can't beat higher specificity). */
+@media (max-width: 768px) {
+  .navbar,
+  nav.navbar {
+    width: auto !important;
+    max-width: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  #navMenu,
+  .nav-menu,
+  html[dir="rtl"] .nav-menu,
+  html[dir="rtl"] .navbar .nav-menu,
+  html[dir="rtl"] nav .nav-menu,
+  html[dir="rtl"] header .nav-menu,
+  html[dir="rtl"] .nav-container .nav-menu,
+  [dir="rtl"] .navbar .nav-menu,
+  [dir="rtl"] nav .nav-menu,
+  [dir="rtl"] header .nav-menu,
+  [dir="rtl"] .nav-container .nav-menu,
+  [dir="rtl"] .nav-menu,
+  html[lang="he"] .nav-menu,
+  html[lang="ar"] .nav-menu {
+    /* Force position:fixed so the --ios-viewport-gap shift is measured
+       against the (visual) viewport, not whatever container the menu may
+       have been reparented into by earlier v1/v2 patches.
+       --zappy-navbar-bottom is set by the runtime JS companion and
+       defaults to 70px — this lets us override the v2 `top: 100%` (which
+       with position:fixed would resolve to the full viewport height and
+       push the menu off-screen). */
+    position: fixed !important;
+    top: var(--zappy-navbar-bottom, 70px) !important;
+    right: var(--ios-viewport-gap, 0px) !important;
+  }
+}
+
+/* RTL footer contact: icon on the right (start) side, text on the left */
+html[dir="rtl"] .footer-contact li, html[dir="rtl"] .site-footer .footer-contact li, html[dir="rtl"] .site-footer .footer-col:nth-child(3) .footer-contact li { flex-direction: row !important; justify-content: flex-start !important; }
+html[dir="rtl"] .footer-contact .contact-icon { order: 0 !important; }
+html[dir="rtl"] .footer-contact .contact-text { order: 1 !important; }
+html[dir="rtl"] .footer-contact li > a { flex-direction: row !important; }
+
+/* Spec table BiDi fix: isolate cells so mixed LTR/RTL content renders correctly */
+.specs-table th, .specs-table td { unicode-bidi: plaintext !important; }
